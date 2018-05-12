@@ -1,4 +1,4 @@
-# Xilinx-Deep-Learning-Nexys4
+# Xilinx Deep Learning Core on Nexys4 board
 
 Instructions:
 1. Open Vivado 2018.1
