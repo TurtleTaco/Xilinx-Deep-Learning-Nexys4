@@ -10,22 +10,32 @@
 
 #define PRINT xil_printf
 
+// DDR base address
 unsigned int * ddr = (unsigned int*) 0x80000000;
 
-// BRAM
+// DATA address
 unsigned int * cmd_baseaddr = (unsigned int*) 0x80000000;
 unsigned int * ifm_baseaddr = (unsigned int*) 0x80000100;
-unsigned int * weights_baseaddr = (unsigned int*) 0x80002000; // need only up to 0xc0002100 because only 288 words
+unsigned int * weights_baseaddr = (unsigned int*) 0x80002000;
 unsigned int * debug_baseaddr = (unsigned int*) 0x80000400;
 unsigned int * ofm_baseaddr = (unsigned int*) 0x8000c000;
 
-// DATAFLOW
+// DATAFLOW address
+// The offset must be consistent 
 unsigned int * CNNDATAFLOW_BASEADDR = (unsigned int*) 0x44a00000;
 unsigned int * NUM_COMMANDS_BASEADDR = (unsigned int*) (0x44a00000 + 0x60);
 unsigned int * CMD_BASEADDR_BASEADDR = (unsigned int*) (0x44a00000 + 0x70);
 unsigned int * CYCLE_COUNT_BASEADDR = (unsigned int*) (0x44a00000 + 0xd0);
 
-// Initializing DARIUS
+// CMD is the concatenation of 5 arrays each with below length, cmd total size in bytes is always 128 bytes
+int cmd_conv_len = 12;
+int cmd_addr_len = 9;
+int cmd_mode_len = 2;
+int cmd_pool_len = 8;
+int cmd_rsvd_len = 12;
+int cmd_size_bytes = 128;
+
+// Sample Data
 int16_t ifm_reshape[ifm_len] = {
 		90, 58, 68, 204, 115, 33, 193, 253, 0, 20, 99, 191, 176, 249, 43, 229, 71, 83, 70, 152,
 		226, 252, 136, 131, 190, 165, 51, 76, 224, 116, 49, 116, 147, 185, 182, 226, 117, 184, 83, 184,
@@ -76,50 +86,38 @@ int16_t weights_reshape[weights_len] = {
 	201, 91, 75, 247, 28, 190, 158, 109, 92, 17, 191, 144, 33, 120, 203, 167
 };
 
-//unsigned char cmd[cmd_len] = {0x06,0x00,0x06,0x00,0x03,0x00,0x03,0x00,0x01,0x00,0x00,0x00,0x04,0x00,0x04,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,0x00,0x10,0x00,0x00,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xf0,0x01,0x00,0x10,0x00,0x00,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x04,0x00,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-
-uint16_t cmd_conv[12] = {6, 6, 3, 3, 1, 0, 4, 4, 1, 1, 1, 1};
-uint32_t cmd_addr[9] = {2147483904, 36, 288, 0, 2148270080, 16, 2147491840, 72, 576};
-uint16_t cmd_mode[2] = {0, 0};
-uint16_t cmd_pool[8] = {4, 4, 0, 0, 0, 0, 0, 0};
-uint32_t cmd_rsvd[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-// Total size is 12*16+9*32+2*16+8*16+12*32 = 1024
+uint16_t cmd_conv[cmd_conv_len] = {6, 6, 3, 3, 1, 0, 4, 4, 1, 1, 1, 1};
+uint32_t cmd_addr[cmd_addr_len] = {2147483904, 36, 288, 0, 2148270080, 16, 2147491840, 72, 576};
+uint16_t cmd_mode[cmd_mode_len] = {0, 0};
+uint16_t cmd_pool[cmd_pool_len] = {4, 4, 0, 0, 0, 0, 0, 0};
+uint32_t cmd_rsvd[cmd_rsvd_len] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 int main()
 {
     init_platform();
 
-    PRINT("Hello Darius\n");
     PRINT("ifm_reshape size is %d bytes\n", sizeof(ifm_reshape));
     PRINT("weights_reshape size is %d bytes\n", sizeof(weights_reshape));
 
     // Generate command array
     uint8_t* cmd = malloc(12*sizeof(uint16_t) + 9*sizeof(uint32_t) + 2*sizeof(uint16_t) + 8*sizeof(uint16_t) + 12*sizeof(uint32_t));
     memcpy(cmd, cmd_conv, 12*sizeof(uint16_t));
-    memcpy(cmd + 12*sizeof(uint16_t), cmd_addr, 9*sizeof(uint32_t));
-    memcpy(cmd + 12*sizeof(uint16_t) + 9*sizeof(uint32_t), cmd_mode, 2*sizeof(uint16_t));
-    memcpy(cmd + 12*sizeof(uint16_t) + 9*sizeof(uint32_t) + 2*sizeof(uint16_t), cmd_pool, 8*sizeof(uint16_t));
-    memcpy(cmd + 12*sizeof(uint16_t) + 9*sizeof(uint32_t) + 2*sizeof(uint16_t) + 8*sizeof(uint16_t), cmd_rsvd, 12*sizeof(uint32_t));
+    memcpy(cmd + cmd_conv_len*sizeof(uint16_t), cmd_addr, 9*sizeof(uint32_t));
+    memcpy(cmd + cmd_conv_len*sizeof(uint16_t) + cmd_addr_len*sizeof(uint32_t), cmd_mode, 2*sizeof(uint16_t));
+    memcpy(cmd + cmd_conv_len*sizeof(uint16_t) + cmd_addr_len*sizeof(uint32_t) + cmd_mode_len*sizeof(uint16_t), cmd_pool, 8*sizeof(uint16_t));
+    memcpy(cmd + cmd_conv_len*sizeof(uint16_t) + cmd_addr_len*sizeof(uint32_t) + cmd_mode_len*sizeof(uint16_t) + cmd_pool_len*sizeof(uint16_t), cmd_rsvd, 12*sizeof(uint32_t));
 
-    PRINT("cmd size is %d bytes\n", 12*sizeof(uint16_t) + 9*sizeof(uint32_t) + 2*sizeof(uint16_t) + 8*sizeof(uint16_t) + 12*sizeof(uint32_t));
-
-    PRINT("H: %d", cmd[0]);
-
-	// write ifm ,weights and cmd to BRAM
+	// write ifm ,weights and cmd to BRAM/DDR
 	memcpy(ifm_baseaddr, ifm_reshape, sizeof(ifm_reshape));
 	memcpy(weights_baseaddr, weights_reshape, sizeof(weights_reshape));
 	memcpy(debug_baseaddr, weights_reshape, sizeof(weights_reshape));
-	memcpy(cmd_baseaddr, cmd, 128);
-
-	//unsigned int * debug_addr = (unsigned int*) 0xc0000000;
-	//memcpy(debug_addr, cmd, 128);
+	memcpy(cmd_baseaddr, cmd, cmd_size_bytes);
 
 	// write DATAFLOW attributes
 	*(NUM_COMMANDS_BASEADDR) = 1;
 	*(CMD_BASEADDR_BASEADDR) = 0x80000000;
 
 	// read CNNDataflow IP state
-
 	unsigned int state = *(CNNDATAFLOW_BASEADDR + 0x0);
 	if (state == 4){
 		PRINT("state: IP IDLE\nStarting IP \n");
