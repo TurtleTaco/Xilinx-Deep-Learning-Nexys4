@@ -8,51 +8,6 @@
 
 #define PRINT xil_printf
 
-// BRAM
-unsigned int * cmd_baseaddr = (unsigned int*) 0x80000000;
-unsigned int * ifm_baseaddr = (unsigned int*) 0x80000100;
-unsigned int * weights_baseaddr = (unsigned int*) 0x80002000; // need only up to 0xc0002100 because only 288 words
-unsigned int * ofm_baseaddr = (unsigned int*) 0x8000c000;
-
-// DATAFLOW
-unsigned int * CNNDATAFLOW_BASEADDR = (unsigned int*) 0x44a00000;
-unsigned int * NUM_COMMANDS_BASEADDR = (unsigned int*) (0x44a00000 + 0x60);
-unsigned int * CMD_BASEADDR_BASEADDR = (unsigned int*) (0x44a00000 + 0x70);
-unsigned int * CYCLE_COUNT_BASEADDR = (unsigned int*) (0x44a00000 + 0xd0);
-
-// Initializing DARIUS
-int16_t ifm_reshape[ifm_len] = {
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-        1, 1, 1, 1, 1, 1, 1, 1
-	};
-
-int16_t weights_reshape[weights_len] = {
-	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-    1, 1, 1, 1
-};
-
-uint16_t cmd_conv[12] = {6, 6, 1, 1, 1, 0, 6, 6, 1, 1, 1, 1};
-uint32_t cmd_addr[9] = {2147483904, 36, 288, 0, 2147532800, 36, 2147491840, 8, 64};
-// uint16_t cmd_mode[2] = {0, 0};
-uint16_t cmd_pool[10] = {0, 1, 6, 6, 0, 0, 0, 0, 0, 0};
-uint32_t cmd_rsvd[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-
 struct kernel_command {
     uint16_t ifm_height;
     uint16_t ifm_width;
@@ -88,7 +43,83 @@ struct kernel_command {
     uint32_t rsved[12];
 };
 
+// BRAM
+unsigned int * cmd_baseaddr = (unsigned int*) 0x80000000;
+unsigned int * ifm_baseaddr = (unsigned int*) 0x80000100;
+unsigned int * weights_baseaddr = (unsigned int*) 0x80002000; // need only up to 0xc0002100 because only 288 words
+unsigned int * ofm_baseaddr = (unsigned int*) 0x8000c000;
 
+// DATAFLOW
+unsigned int * CNNDATAFLOW_BASEADDR = (unsigned int*) 0x44a00000;
+unsigned int * NUM_COMMANDS_BASEADDR = (unsigned int*) (0x44a00000 + 0x60);
+unsigned int * CMD_BASEADDR_BASEADDR = (unsigned int*) (0x44a00000 + 0x70);
+unsigned int * CYCLE_COUNT_BASEADDR = (unsigned int*) (0x44a00000 + 0xd0);
+
+// Initializing DARIUS
+int16_t ifm_reshape[ifm_len] = {
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1
+	};
+
+int16_t weights_reshape[weights_len] = {
+	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1
+};
+
+uint16_t cmd_conv[12] = {6, 6, 1, 1, 1, 0, 6, 6, 1, 1, 1, 1};
+uint32_t cmd_addr[9] = {2147483904, 36, 288, 0, 2147532800, 36, 2147491840, 8, 64};
+uint16_t cmd_pool[10] = {0, 1, 6, 6, 0, 0, 0, 0, 0, 0};
+uint32_t cmd_rsvd[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+void struct_init(struct kernel_command *cmd_ptr){
+	cmd_ptr->ifm_height = 6;
+	cmd_ptr->ifm_width = 6;
+	cmd_ptr->kernel_height = 1;
+	cmd_ptr->kernel_width = 1;
+	cmd_ptr->stride = 1;
+	cmd_ptr->pad = 0;
+	cmd_ptr->ofm_height = 6;
+	cmd_ptr->ofm_width = 6;
+	cmd_ptr->ifm_slices = 1;
+	cmd_ptr->ofm_slices = 1;
+	cmd_ptr->ofm_fragments = 1;
+	cmd_ptr->ifm_mem_fragments = 1;
+	cmd_ptr->ifm_baseaddr = 2147483904;
+	cmd_ptr->ifm_packet_length = 36;
+	cmd_ptr->ifm_depth_offset = 288;
+	cmd_ptr->ifm_height_offset = 0;
+	cmd_ptr->ofm_baseaddr = 2147532800;
+	cmd_ptr->ofm_packet_length = 36;
+	cmd_ptr->weight_baseaddr = 2147491840;
+	cmd_ptr->weight_packet_length = 8;
+	cmd_ptr->weight_depth_offset = 64;
+	cmd_ptr->data_mode = 0;                 // SET TO “0” FOR 16-BIT
+	cmd_ptr->activation_pack = 1;        // SET TO “1” FOR 16-BIT
+	cmd_ptr->pool_input_height = 6;
+	cmd_ptr->pool_input_width = 6;
+	cmd_ptr->pool_kernel_height = 0;
+	cmd_ptr->pool_kernel_width = 0;
+	cmd_ptr->pool_output_height = 0;
+	cmd_ptr->pool_output_width = 0;
+	cmd_ptr->pool_stride = 0;
+	cmd_ptr->relu = 0;
+	memcpy(cmd_ptr->rsved, cmd_rsvd, sizeof(cmd_ptr->rsved));
+}
 
 
 int main()
@@ -99,63 +130,22 @@ int main()
     PRINT("ifm_reshape size is %d bytes\n", sizeof(ifm_reshape));
     PRINT("weights_reshape size is %d bytes\n", sizeof(weights_reshape));
 
-    // Generate command array
-    uint8_t* cmd = malloc(12*sizeof(uint16_t) + 9*sizeof(uint32_t) + 10*sizeof(uint16_t) + 12*sizeof(uint32_t));
-    kernel_command cmd_all;
-    cmd_all = (kernel_command){
-        .ifm_height = 6;
-        .ifm_width = 6;
-        .kernel_height = 1;
-        .kernel_width = 1;
-        .stride = 1;
-        .pad = 0;
-        .ofm_height = 6;
-        .ofm_width = 6;
-        .ifm_slices = 1;
-        .ofm_slices = 1;
-        .ofm_fragments = 1;
-        .ifm_mem_fragments = 1;
-        .ifm_baseaddr = 2147483904;
-        .ifm_packet_length = 36;
-        .ifm_depth_offset = 288;
-        .ifm_height_offset = 0;
-        .ofm_baseaddr = 2147532800;
-        .ofm_packet_length = 36;
-        .weight_baseaddr = 2147491840;
-        .weight_packet_length = 8;
-        .weight_depth_offset = 64;
-        .data_mode = 0;                 // SET TO “0” FOR 16-BIT
-        .activation_pack = 1;        // SET TO “1” FOR 16-BIT
-        .pool_input_height = 6;
-        .pool_input_width = 6;
-        .pool_kernel_height = 0;
-        .pool_kernel_width = 0;
-        .pool_output_height = 0;
-        .pool_output_width = 0;
-        .pool_stride = 0;
-        .relu = 0;
-        .rsved[12] = cmd_rsvd;
-    }
-
-    memcpy(cmd, cmd_all, 128);
-    // memcpy(cmd, cmd_conv, 12*sizeof(uint16_t));
-    // memcpy(cmd + 12*sizeof(uint16_t), cmd_addr, 9*sizeof(uint32_t));
-    // memcpy(cmd + 12*sizeof(uint16_t) + 9*sizeof(uint32_t), cmd_pool, 10*sizeof(uint16_t));
-    // memcpy(cmd + 12*sizeof(uint16_t) + 9*sizeof(uint32_t) + 10*sizeof(uint16_t), cmd_rsvd, 12*sizeof(uint32_t));
+    // Generate command struct
+    struct kernel_command cmd_all;
+    struct_init(&cmd_all);
 
     PRINT("cmd size is %d bytes\n", 12*sizeof(uint16_t) + 9*sizeof(uint32_t) + 10*sizeof(uint16_t) + 12*sizeof(uint32_t));
 
 	// write ifm ,weights and cmd to BRAM
 	memcpy(ifm_baseaddr, ifm_reshape, sizeof(ifm_reshape));
 	memcpy(weights_baseaddr, weights_reshape, sizeof(weights_reshape));
-	memcpy(cmd_baseaddr, cmd, 128);
+	memcpy(cmd_baseaddr, &cmd_all, sizeof(struct kernel_command));
 
 	// write DATAFLOW attributes
 	*(NUM_COMMANDS_BASEADDR) = 1;
 	*(CMD_BASEADDR_BASEADDR) = 0x80000000;
 
 	// read CNNDataflow IP state
-
 	unsigned int state = *(CNNDATAFLOW_BASEADDR + 0x0);
 	if (state == 4){
 		PRINT("state: IP IDLE\nStarting IP \n");
