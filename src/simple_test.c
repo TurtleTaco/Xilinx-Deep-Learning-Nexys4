@@ -109,7 +109,7 @@ void struct_init(struct kernel_command *cmd_ptr){
 	cmd_ptr->weight_packet_length = 8;
 	cmd_ptr->weight_depth_offset = 64;
 	cmd_ptr->data_mode = 0;                 // SET TO “0” FOR 16-BIT
-	cmd_ptr->activation_pack = 1;        // SET TO “1” FOR 16-BIT
+	cmd_ptr->activation_pack = 0;        // SET TO “1” FOR 16-BIT
 	cmd_ptr->pool_input_height = 6;
 	cmd_ptr->pool_input_width = 6;
 	cmd_ptr->pool_kernel_height = 0;
@@ -134,11 +134,12 @@ int main()
     struct kernel_command cmd_all;
     struct_init(&cmd_all);
 
-    PRINT("cmd size is %d bytes\n", 12*sizeof(uint16_t) + 9*sizeof(uint32_t) + 10*sizeof(uint16_t) + 12*sizeof(uint32_t));
+    PRINT("cmd size is %d bytes\n", sizeof(struct kernel_command));
 
 	// write ifm ,weights and cmd to BRAM
 	memcpy(ifm_baseaddr, ifm_reshape, sizeof(ifm_reshape));
 	memcpy(weights_baseaddr, weights_reshape, sizeof(weights_reshape));
+//	PRINT("base: %d \n", cmd_all.ifm_baseaddr);
 	memcpy(cmd_baseaddr, &cmd_all, sizeof(struct kernel_command));
 
 	// write DATAFLOW attributes
@@ -147,6 +148,7 @@ int main()
 
 	// read CNNDataflow IP state
 	unsigned int state = *(CNNDATAFLOW_BASEADDR + 0x0);
+	PRINT("state now is : %d \n", state);
 	if (state == 4){
 		PRINT("state: IP IDLE\nStarting IP \n");
 		*(CNNDATAFLOW_BASEADDR + 0x0) = 1;
