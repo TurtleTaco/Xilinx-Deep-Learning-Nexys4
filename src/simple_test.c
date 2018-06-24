@@ -109,7 +109,7 @@ void struct_init(struct kernel_command *cmd_ptr){
 	cmd_ptr->weight_packet_length = 8;
 	cmd_ptr->weight_depth_offset = 64;
 	cmd_ptr->data_mode = 0;                 // SET TO “0” FOR 16-BIT
-	cmd_ptr->activation_pack = 0;        // SET TO “1” FOR 16-BIT
+	cmd_ptr->activation_pack = 1;        // SET TO “1” FOR 16-BIT
 	cmd_ptr->pool_input_height = 6;
 	cmd_ptr->pool_input_width = 6;
 	cmd_ptr->pool_kernel_height = 0;
