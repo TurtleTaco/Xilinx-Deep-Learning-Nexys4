@@ -30,8 +30,8 @@ struct kernel_command {
     uint32_t weight_baseaddr;
     uint32_t weight_packet_length;
     uint32_t weight_depth_offset;
-    uint16_t data_mode;                 // SET TO “0” FOR 16-BIT
-    uint16_t activation_pack;        // SET TO “1” FOR 16-BIT
+    uint16_t data_mode;                 // SET TO 0 FOR 16-BIT
+    uint16_t activation_pack;        // SET TO 1 FOR 16-BIT
     uint16_t pool_input_height;
     uint16_t pool_input_width;
     uint16_t pool_kernel_height;
@@ -51,6 +51,7 @@ unsigned int * ofm_baseaddr = (unsigned int*) 0x8000c000;
 
 // DATAFLOW
 unsigned int * CNNDATAFLOW_BASEADDR = (unsigned int*) 0x44a00000;
+
 unsigned int * NUM_COMMANDS_BASEADDR = (unsigned int*) (0x44a00000 + 0x60);
 unsigned int * CMD_BASEADDR_BASEADDR = (unsigned int*) (0x44a00000 + 0x70);
 unsigned int * CYCLE_COUNT_BASEADDR = (unsigned int*) (0x44a00000 + 0xd0);
