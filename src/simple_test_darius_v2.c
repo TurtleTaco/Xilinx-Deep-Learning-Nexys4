@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <inttypes.h>
 #include "stdlib.h"
 #include "platform.h"
 #include "xil_printf.h"
@@ -76,10 +77,10 @@ int16_t ifm_reshape[ifm_len] = {
 	};
 
 int16_t weights_reshape[weights_len] = {
-	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1
 };
 
 uint16_t cmd_conv[12] = {6, 6, 1, 1, 1, 0, 6, 6, 1, 1, 1, 1};
@@ -135,6 +136,9 @@ int main()
     struct kernel_command cmd_all;
     struct_init(&cmd_all);
 
+    //ofm reveiver
+    int16_t output[288] = {0};
+
     PRINT("cmd size is %d bytes\n", sizeof(struct kernel_command));
 
 	// write ifm ,weights and cmd to BRAM
@@ -177,6 +181,20 @@ int main()
 	// pull results from CYCLE_COUNT_BASEADDR
 	unsigned int hw_cycle = *(CYCLE_COUNT_BASEADDR); // BRAM is word addressable, hw_cycle is 4 bytes
 	PRINT("CNNDataflow IP cycles: %d \n", hw_cycle);
+
+	// pull ofm
+	PRINT("The output is: \n");
+	memcpy(output, ofm_baseaddr, 576);
+	for (int index = 0; index < 288; index++){
+
+		if (index % 8 == 0 && index != 0){
+			printf("\n");
+		}
+		if (index % 48 == 0 && index != 0){
+			printf("\n");
+		}
+		printf("%" PRId16 " ", output[index]);
+	}
 
     cleanup_platform();
     return 0;
