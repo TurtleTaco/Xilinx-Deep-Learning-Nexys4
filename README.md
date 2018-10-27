@@ -15,7 +15,8 @@ Instructions:
 12. Run
 13. Outputs cycles takes to compute convolution and maxpooling on sample data
 
-test bench for darius uses below fake instruction <br />
+tb_mpi_eth.sv <br />
+Test bench for darius uses below fake instruction <br />
  <br />
 general parameters: <br />
 input: w * h * c = 6 * 6 * 8 <br />
