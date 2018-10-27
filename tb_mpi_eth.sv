@@ -415,7 +415,7 @@ module mpi_eth_stimulate
             );
         
         $display("before wait for done");
-                    
+                      
         stream.mpi_send_wait_for_done(
                                      .dst_rank(dst_rank),
                                      .src_rank(src_rank),
