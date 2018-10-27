@@ -16,14 +16,14 @@ Instructions:
 13. Outputs cycles takes to compute convolution and maxpooling on sample data
 
 test bench for darius uses below fake instruction
-input image: 288 * 16 bits in size
-ifm_sw = np.array([1] * 288)
-parameter: 64 * 16 bits in size
-weights_sw = np.array([1] * 64)
-output: software simulation 288 * 16 bits in size
-[[[[64. 64. 64. 64. 64. 64. 64. 64.]
-   [64. 64. 64. 64. 64. 64. 64. 64.]
-   [64. 64. 64. 64. 64. 64. 64. 64.]
+1. input image: 288 * 16 bits in size <br />
+ifm_sw = np.array([1] * 288) <br />
+2. parameter: 64 * 16 bits in size <br />
+weights_sw = np.array([1] * 64) <br />
+3. output: software simulation 288 * 16 bits in size <br />
+[[[[64. 64. 64. 64. 64. 64. 64. 64.]<br />
+   [64. 64. 64. 64. 64. 64. 64. 64.]<br />
+   [64. 64. 64. 64. 64. 64. 64. 64.]<br />
    [64. 64. 64. 64. 64. 64. 64. 64.]
    [64. 64. 64. 64. 64. 64. 64. 64.]
    [64. 64. 64. 64. 64. 64. 64. 64.]]
