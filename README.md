@@ -15,20 +15,15 @@ Instructions:
 12. Run
 13. Outputs cycles takes to compute convolution and maxpooling on sample data
 
-test bench for darius uses below fake instruction
-general parameters:
-'''
-input: w * h * c = 6 * 6 * 8
-
-weights: w * h * c = 1 * 1 * 8 / stride: 1 / pad: 0
-
-output: 6 * 6 * 8 (conv1)
-
-pool: w * h = 2 * 2 / stride: 2
-
-output: 3 * 3 * 8
-
-'''
+test bench for darius uses below fake instruction <br />
+ <br />
+general parameters: <br />
+input: w * h * c = 6 * 6 * 8 <br />
+weights: w * h * c = 1 * 1 * 8 / stride: 1 / pad: 0 <br />
+output: 6 * 6 * 8 (conv1) <br />
+pool: w * h = 2 * 2 / stride: 2 <br />
+output: 3 * 3 * 8 <br />
+ <br />
 1. input image: 288 * 16 bits in size <br />
 ifm_sw = np.array([1] * 288) <br />
 2. parameter: 64 * 16 bits in size <br />
