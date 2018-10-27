@@ -169,8 +169,8 @@ module mpi_eth_stimulate
         //           lower  32 bits: size (bytes) in mem to dma_out
         // example: dma_in at offset 0x00001000, prepare to dma_in 576 bytes as input image
         //          payload: (hex) 0x00001000 00000240
-        // example: dma_out at offset 0x00005000, prepare to dma_out 576 bytes as output feature map
-        //          payload: (hex) 0x00005000 00000240
+        // example: dma_out at offset 0x00005000, prepare to dma_out 144 bytes as output feature map
+        //          payload: (hex) 0x00005000 00000090
 
         stream.write(
                     .data(64'h0000100000000240),
@@ -178,7 +178,7 @@ module mpi_eth_stimulate
                     .last(1'b0)
                     );
         stream.write(
-                    .data(64'h0000500000000240),
+                    .data(64'h0000500000000090),
                     .keep(8'hff),
                     .last(1'b1)x
                     );
@@ -403,7 +403,7 @@ module mpi_eth_stimulate
         $display("after wait for done");
 
         display("prepare 8th transaction to receive output");
-        size = 16'd144; // modify
+        size = 16'd36; // modify
         stream.mpi_recv(
                     .dst_rank(src_rank),
                     .src_rank(dst_rank), 
@@ -415,7 +415,7 @@ module mpi_eth_stimulate
             );
         
         $display("before wait for done");
-                      
+                    
         stream.mpi_send_wait_for_done(
                                      .dst_rank(dst_rank),
                                      .src_rank(src_rank),
