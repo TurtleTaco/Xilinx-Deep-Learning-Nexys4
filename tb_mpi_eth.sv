@@ -390,17 +390,7 @@ module mpi_eth_stimulate
                     .ip_addr_src(32'd0)
             );
         
-        $display("before wait for done");
-                    
-        stream.mpi_send_wait_for_done(
-                                     .dst_rank(dst_rank),
-                                     .src_rank(src_rank),
-                                     .mac_addr_dst(MAC_ADDR_FPGA),
-                                     .mac_addr_src(MAC_ADDR_STIM),
-                                     .ip_addr_dst(32'd0),
-                                     .ip_addr_src(32'd0)
-                                     );
-        $display("after wait for done");
+        $display("After setting up first recv");
 
         display("prepare 8th transaction to receive output");
         size = 16'd36; // modify
@@ -413,18 +403,7 @@ module mpi_eth_stimulate
                     .ip_addr_dst(32'd0),
                     .ip_addr_src(32'd0)
             );
-        
-        $display("before wait for done");
-                    
-        stream.mpi_send_wait_for_done(
-                                     .dst_rank(dst_rank),
-                                     .src_rank(src_rank),
-                                     .mac_addr_dst(MAC_ADDR_FPGA),
-                                     .mac_addr_src(MAC_ADDR_STIM),
-                                     .ip_addr_dst(32'd0),
-                                     .ip_addr_src(32'd0)
-                                     );
-        $display("after wait for done");                                                                                                                                   
+                                                                                                                                         
     end
 
 endmodule
