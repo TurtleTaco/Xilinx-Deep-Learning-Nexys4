@@ -39,3 +39,5 @@ weights_sw = np.array([1] * 64) <br />
   [[8. 8. 8. 8. 8. 8. 8. 8.] <br />
    [8. 8. 8. 8. 8. 8. 8. 8.] <br />
    [8. 8. 8. 8. 8. 8. 8. 8.]]]]
+
+make simFPGA ARGS=1 LOGICALFILE=./telepathy/middlewareInput/conf0/mpiLogical.xml MAPFILE=./telepathy/middlewareInput/conf0/mpiMap.xml SIM_DIR=./telepathy/sim PROJECTNAME=simTest
