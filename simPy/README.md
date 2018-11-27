@@ -13,3 +13,7 @@ largest bias and weight file pair has 1024 biases and 10027008 weights</br>
 consider 16 bits size of every number, it is total 20056064 bytes = 0x1320800 bytes</br>
 assume the same space is reserved for every single layer parameters</br>
 from 0x00000000 add 0x1320800 for every layer follows after</br>
+
+3. Parameters need to be stored in </br>
+../yolo_weights_biases/</br>
+relative to where this json file is located</br>
